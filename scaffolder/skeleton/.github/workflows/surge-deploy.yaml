@@ -1,0 +1,37 @@
+name: React Web - Surge Deployment
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy-backstage:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16.x]
+    
+    name: Build & Publish
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install
+        run: | 
+          npm install
+          npm install -g surge
+
+      - name: npm build
+        run: | 
+          npm run build
+
+      - name: deploying with surge
+        run: surge ./build ${{ vars.SURGE_DNS }} --token ${{ secrets.SURGE_TOKEN }}

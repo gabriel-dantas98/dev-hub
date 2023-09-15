@@ -1,0 +1,27 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{values.component_id | dump}}
+  {%- if values.description %}
+  description: ${{values.description | dump}}
+  {%- endif %}
+  links:
+    - url: ${{values.github_url | dump}}
+      title: Source Code
+      icon: github
+    - url: ${{values.github_url | dump}}/issues
+      title: Bug Tracker
+      icon: github
+    - url: ${{values.github_url | dump}}/pulls
+      title: Contribution Guide
+      icon: descriptionIcon
+    - url: ${{values.github_url | dump}}/releases
+      title: Releases
+      icon: github
+  annotations:
+    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: website
+  lifecycle: experimental
+  owner: ${{values.owner | dump}}
