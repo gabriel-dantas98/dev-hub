@@ -1,6 +1,6 @@
 app:
   title: Backstage
-  baseUrl: https://dantas-portal.web.app
+  baseUrl: 0.0.0.0
 
 organization:
   name: Dantas Portal
@@ -12,7 +12,7 @@ backend:
   # auth:
   #   keys:
   #     - secret: ${BACKEND_SECRET}
-  baseUrl: https://dantas-portal.web.app
+  baseUrl: 0.0.0.0
   listen:
     port: ${PORT}
     # Uncomment the following host directive to bind to specific interfaces
