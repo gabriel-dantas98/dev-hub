@@ -70,42 +70,49 @@ scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 
 catalog:
-  readonly: true
   rules:
     - allow: [Component, API, System, Domain, Resource, Location, User, Group, Template]
   locations:
 
-    - type: url
-      target: https://github.com/gabriel-dantas98/backstage-scaffolders/blob/main/basic-react-app/create-web-app.yaml
+    # - type: url
+    #   target: https://github.com/gabriel-dantas98/backstage-scaffolders/blob/main/basic-react-app/create-web-app.yaml
 
-    # Backstage example components
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-components.yaml
+    # # Backstage example components
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-components.yaml
 
-    # Backstage example systems
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-systems.yaml
+    # # Backstage example systems
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-systems.yaml
 
-    # Backstage example APIs
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
+    # # Backstage example APIs
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-apis.yaml
 
-    # Backstage example organization groups
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme/org.yaml
+    # # Backstage example organization groups
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme/org.yaml
 
-    # Backstage example domains
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-domains.yaml
+    # # Backstage example domains
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-domains.yaml
 
-    # Backstage example resources
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-resources.yaml
+    # # Backstage example resources
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all-resources.yaml
 
-    # The backstage demo deployment (this)
-    - type: url
-      target: https://github.com/backstage/demo/blob/master/catalog-info.yaml
+    # # The backstage demo deployment (this)
+    # - type: url
+    #   target: https://github.com/backstage/demo/blob/master/catalog-info.yaml
+
+    # # The backstage library repository
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/catalog-info.yaml
 
     # The backstage library repository
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/catalog-info.yaml
+    - type: file
+      target: ../../scaffolder/terraform-eks/create-eks.yaml
+
+    # The backstage library repository
+    - type: file
+      target: ../../scaffolder/react-app/create-web-app.yaml

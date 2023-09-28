@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: echoserver
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echoserver
+  namespace: echoserver
+spec:
+  selector:
+    matchLabels:
+      app: echoserver
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: echoserver
+    spec:
+      containers:
+      - image: k8s.gcr.io/e2e-test-images/echoserver:2.5
+        imagePullPolicy: Always
+        name: echoserver
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echoserver
+  namespace: echoserver
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: echoserver
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echoserver
+  namespace: echoserver
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-07e4b975dff3ced2d,subnet-0871be0432cc64cc3
+    alb.ingress.kubernetes.io/tags: Environment=dev,Team=test
+spec:
+  ingressClassName: alb
+  rules:
+    - host: echoserver.gdantas.com.br
+      http:
+        paths:
+          - path: /
+            pathType: Exact
+            backend:
+              service:
+                name: echoserver
+                port:
+                  number: 80

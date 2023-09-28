@@ -1,0 +1,93 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-eks-cluster
+  title: Create EKS Cluster (AWS)
+  description: Template to create EKS using Terraform
+  tags:
+    - iac
+    - aws
+    - kubernetes
+spec:
+  owner: web@example.com
+  type: resource
+  parameters:
+    - title: Provide some simple information
+      required:
+        - cluster_name
+      properties:
+        cluster_name:
+          title: Cluster Name
+          type: string
+          description: Unique name of the application
+          ui:field: EntityNamePicker
+  steps:
+    - id: fetch
+      name: Get Terraform
+      action: fetch:plain
+      input:
+        url: ./cluster-infra
+        targetPath: ./
+
+    - id: show_workspace
+      name: Show files reorganized
+      action: debug:log
+      input:
+        listWorkspace: true
+
+    - id: tf-init
+      name: terraform init
+      action: terraform:cli
+      input:
+        path: "cluster-infra"
+        args: ["init"]
+
+    - id: tf-plan
+      name: terraform plan
+      action: terraform:cli
+      input:
+        path: "cluster-infra"
+        args: ["plan", "-var=cluster_name=dev-hub-cluster"]
+
+    - id: tf-apply
+      name: terraform apply
+      action: terraform:cli
+      input:
+        path: "cluster-infra"
+        args: ["apply", "-var=cluster_name=dev-hub-cluster", "-auto-approve"]
+
+    - id: tf-output
+      name: terraform output
+      action: terraform:cli
+      input:
+        path: "cluster-infra"
+        args: ["output"]
+
+    - id: aws-kube-config
+      name: kube config
+      action: aws:cli
+      input:
+        path: "cluster-infra"
+        args: ["eks", "update-kubeconfig", "--name", "dev-hub-cluster", "--region", "us-east-1"]
+
+    - id: helm-cli-controller
+      name: install aws-alb-controller
+      action: helm:cli
+      input:
+        path: "cluster-infra"
+        args: 
+          - "install"
+          - "aws-load-balancer-controller"
+          - "eks/aws-load-balancer-controller"
+          - "-n" 
+          - "kube-system" 
+          - "--set" 
+          - "clusterName=dev-hub-cluster"
+
+    # - id: tf-apply
+    #   name: terraform plan
+    #   action: terraform:cli
+    #   input:
+    #     path: "cluster-infra"
+    #     command: ["apply"]
+    #     args: [""]

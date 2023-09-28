@@ -1,0 +1,94 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-web-app-template
+  title: Create Simple Web App with Surge.sh (React)
+  description: Create a new WebApp project
+  tags:
+    - react
+    - webapp
+spec:
+  owner: web@example.com
+  type: website
+  parameters:
+    - title: Provide some simple information
+      required:
+        - app_name
+        - description
+      properties:
+        app_name:
+          title: App Name
+          type: string
+          description: Unique name of the application
+          ui:field: EntityNamePicker
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this app is for.
+        surge_token:
+          title: Surge Token for deployment
+          type: string
+          description: Surge for publishing your site
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+    - title: Choose a location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        copyWithoutTemplating:
+          - .github/workflows/*
+        values:
+          component_id: ${{ parameters.app_name }}
+          description: ${{ parameters.description }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          github_url: ${{ parameters.repoUrl }}
+          surgeUrl: "https://${{ parameters.app_name }}.surge.sh"
+          owner: ${{ parameters.owner }}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        description: "https://${{ parameters.app_name }}.surge.sh"
+        repoUrl: ${{ parameters.repoUrl }}
+        secrets:
+          SURGE_TOKEN: ${{ parameters.surge_token }}
+          SURGE_DNS: ${{ parameters.app_name }}.surge.sh
+        repoVariables:
+          SURGE_DNS: ${{ parameters.app_name }}.surge.sh
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
+
+  output:
+    links:
+      - title: Go to Repository ;)
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in Backstage Catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

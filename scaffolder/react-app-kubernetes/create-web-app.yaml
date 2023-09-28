@@ -1,12 +1,13 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: create-web-app-template
-  title: Create Simple Web App (React)
+  name: create-web-app-kubernetes
+  title: Create Simple Web App with Kubernetes (React)
   description: Create a new WebApp project
   tags:
     - react
     - webapp
+    - kubernetes
 spec:
   owner: web@example.com
   type: website
@@ -57,10 +58,11 @@ spec:
         copyWithoutTemplating:
           - .github/workflows/*
         values:
-          component_id: ${{ parameters.app_name }}
+          app_name: ${{ parameters.app_name }}
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
-          owner: ${{ parameters.owner }}
+          github_url: ${{ parameters.repoUrl }}
+          team: ${{ parameters.owner }}
 
     - id: publish
       name: Publish
@@ -68,13 +70,13 @@ spec:
       input:
         allowedHosts:
           - github.com
-        description: This is ${{ parameters.app_name }}
+        description: "https://${{ parameters.app_name }}.surge.sh"
         repoUrl: ${{ parameters.repoUrl }}
         secrets:
-          SURGE_TOKEN: ${{ parameters.surge_token }}
-          SURGE_DNS: ${{ parameters.app_name }}.surge.sh
+          KUBERNETES_SECRET: ${{ parameters.surge_token }}
+          IMAGE_REGISTRY: ${{ parameters.app_name }}.surge.sh
         repoVariables:
-          SURGE_DNS: ${{ parameters.app_name }}.surge.sh
+          KUBERNETES_URL: ${{ parameters.app_name }}.surge.sh
 
     - id: register
       name: Register

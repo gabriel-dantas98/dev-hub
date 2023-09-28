@@ -6,18 +6,8 @@ metadata:
   description: ${{values.description | dump}}
   {%- endif %}
   links:
-    - url: ${{values.github_url | dump}}
-      title: Source Code
-      icon: github
-    - url: ${{values.github_url | dump}}/issues
-      title: Bug Tracker
-      icon: github
-    - url: ${{values.github_url | dump}}/pulls
-      title: Contribution Guide
-      icon: descriptionIcon
-    - url: ${{values.github_url | dump}}/releases
-      title: Releases
-      icon: github
+    - url: ${{values.surgeUrl | dump}}
+      title: Surge URL
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
     backstage.io/techdocs-ref: dir:.

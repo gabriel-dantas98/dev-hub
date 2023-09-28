@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+## React Web App - created by Backstage and Surge.sh
+
+Go to ${{ values.surgeUrl }} to see your app live!
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

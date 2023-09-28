@@ -5,8 +5,6 @@ import ExtensionIcon from '@material-ui/icons/Extension';
 import MapIcon from '@material-ui/icons/MyLocation';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
-import LogoFull from './LogoFull';
-import LogoIcon from './LogoIcon';
 import {
   Settings as SidebarSettings,
   UserSettingsSignInAvatar,
@@ -26,6 +24,9 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import DevLogoFull from './DevLogoFull';
+import DevLogoIcon from './DevLogoIcon';
+// import DevLogoFull from './DevLogoFull';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -49,7 +50,7 @@ const SidebarLogo = () => {
   return (
     <div className={classes.root}>
       <Link to="/" underline="none" className={classes.link} aria-label="Home">
-        {isOpen ? <LogoFull /> : <LogoIcon />}
+        {isOpen ? <DevLogoFull /> : <DevLogoIcon />}
       </Link>
     </div>
   );
