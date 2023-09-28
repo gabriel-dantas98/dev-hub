@@ -115,4 +115,9 @@ catalog:
 
     # The backstage library repository
     - type: file
-      target: ../../scaffolder/react-app/create-web-app.yaml
+      target: ../../scaffolder/react-app-kubernetes/create-web-app.yaml
+
+
+    # The backstage library repository
+    - type: file
+      target: ../../scaffolder/react-app-surge/create-web-app.yaml

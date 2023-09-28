@@ -89,6 +89,3 @@ spec:
     links:
       - title: Go to Repository ;)
         url: ${{ steps.publish.output.remoteUrl }}
-      - title: Open in Backstage Catalog
-        icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}

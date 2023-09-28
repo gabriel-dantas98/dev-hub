@@ -10,6 +10,7 @@ import type { PluginEnvironment } from '../types';
 import { createTerraformPlanAction } from './scaffolder/actions/terraform';
 import { createHelmCLIAction } from './scaffolder/actions/helm';
 import { createAWSCliAction } from './scaffolder/actions/aws-cli';
+import { createKubectlCLIAction } from './scaffolder/actions/kubectl';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -31,6 +32,7 @@ export default async function createPlugin(
     createTerraformPlanAction(),
     createHelmCLIAction(),
     createAWSCliAction(),
+    createKubectlCLIAction(),
   ];
 
   return await createRouter({

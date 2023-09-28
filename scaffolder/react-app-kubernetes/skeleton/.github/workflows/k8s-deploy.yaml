@@ -1,4 +1,4 @@
-name: React Web - Surge Deployment
+name: React Container - Kubernetes Deployment
 
 on:
   push:
@@ -19,10 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
-      - name: setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
 
       - name: npm install
         run: | 
@@ -32,11 +28,42 @@ jobs:
         run: | 
           npm run build
 
-      - name: docker login
-        run: surge ./build ${{ vars.SURGE_DNS }} --token ${{ secrets.SURGE_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: kubernetes set-context
-        run: surge ./build ${{ vars.SURGE_DNS }} --token ${{ secrets.SURGE_TOKEN }}
+      - name: Build and push the Docker image
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: |
+            gabsdevops/${{ github.event.repository.name }}:latest
+            gabsdevops/${{ github.event.repository.name }}:${{ github.sha }}
 
-      - name: docker build
-        run: surge ./build ${{ vars.SURGE_DNS }} --token ${{ secrets.SURGE_TOKEN }}
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Trigger deploy
+        uses: Consensys/kubernetes-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: apply ./kube/deployment.yaml
+
+      - uses: azure/setup-kubectl@v3
+        with:
+            version: '<version>' # default is latest stable
+        id: install
+  
+      - uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: <your kubeconfig> # Use secret (https://developer.github.com/actions/managing-workflows/storing-secrets/)
+          context: <context name>  #If left unspecified, current-context from kubeconfig is used as default
+        id: setcontext

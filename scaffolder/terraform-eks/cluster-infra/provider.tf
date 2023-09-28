@@ -5,7 +5,7 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket         = "devhub-terraform-backend"
-    key            = "clusters/eks/dev-hub-cluster/terraform.tfstate"
+    key            = "clusters/eks/backstage-terraform/terraform.tfstate"
     region         = "us-east-1"
     }
 }

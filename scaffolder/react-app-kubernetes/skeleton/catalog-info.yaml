@@ -6,8 +6,8 @@ metadata:
   description: ${{values.description | dump}}
   {%- endif %}
   links:
-    - url: ${{values.surgeUrl | dump}}
-      title: Surge URL
+    - url: ${{values.dns | dump}}
+      title: APP URL
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
     backstage.io/techdocs-ref: dir:.

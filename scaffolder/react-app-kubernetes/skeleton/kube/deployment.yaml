@@ -19,7 +19,7 @@ spec:
         app: ${{ values.app_name }}
     spec:
       containers:
-      - image: ${{ values.docker_registry }}/${{ values.app_name }}:latest
+      - image: gabsdevops/${{ values.app_name }}:latest
         imagePullPolicy: Always
         name: ${{ values.app_name }}
         ports:

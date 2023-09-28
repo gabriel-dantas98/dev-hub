@@ -47,14 +47,14 @@ spec:
       action: terraform:cli
       input:
         path: "cluster-infra"
-        args: ["plan", "-var=cluster_name=dev-hub-cluster"]
+        args: ["plan", "-var=cluster_name=${{ parameters.cluster_name }}"]
 
     - id: tf-apply
       name: terraform apply
       action: terraform:cli
       input:
         path: "cluster-infra"
-        args: ["apply", "-var=cluster_name=dev-hub-cluster", "-auto-approve"]
+        args: ["apply", "-var=cluster_name=${{ parameters.cluster_name }}", "-auto-approve"]
 
     - id: tf-output
       name: terraform output
@@ -68,7 +68,7 @@ spec:
       action: aws:cli
       input:
         path: "cluster-infra"
-        args: ["eks", "update-kubeconfig", "--name", "dev-hub-cluster", "--region", "us-east-1"]
+        args: ["eks", "update-kubeconfig", "--name", "${{ parameters.cluster_name }}", "--region", "us-east-1"]
 
     - id: helm-cli-controller
       name: install aws-alb-controller
@@ -82,12 +82,14 @@ spec:
           - "-n" 
           - "kube-system" 
           - "--set" 
-          - "clusterName=dev-hub-cluster"
+          - "clusterName=${{ parameters.cluster_name }}"
 
-    # - id: tf-apply
-    #   name: terraform plan
-    #   action: terraform:cli
-    #   input:
-    #     path: "cluster-infra"
-    #     command: ["apply"]
-    #     args: [""]
+    - id: kubectl-cli
+      name: install external-dns
+      action: kubectl:cli
+      input:
+        path: "cluster-infra"
+        args: 
+          - "apply"
+          - "-f"
+          - "external-dns.yaml"

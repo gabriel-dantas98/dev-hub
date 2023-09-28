@@ -26,10 +26,6 @@ spec:
           title: Description
           type: string
           description: Help others understand what this app is for.
-        surge_token:
-          title: Surge Token for deployment
-          type: string
-          description: Surge for publishing your site
         owner:
           title: Owner
           type: string
@@ -38,7 +34,8 @@ spec:
           ui:options:
             allowedKinds:
               - Group
-    - title: Choose a location
+
+    - title: Choose your repository name
       required:
         - repoUrl
       properties:
@@ -49,6 +46,38 @@ spec:
           ui:options:
             allowedHosts:
               - github.com
+
+    - title: Inform your 
+      description: |
+        ## Arquitetura que será criada
+
+        ![EKS AWS Example](https://res.cloudinary.com/practicaldev/image/fetch/s--pAuP3U8B--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_800/https://cdn-images-1.medium.com/max/2000/1%2A0sLY3mEeoyTMIN_oRXzx-w.png).
+        
+      required:
+        - kube_config
+      properties:
+        kube_config:
+          title: Kube configuration to connection
+          type: string
+          ui:widget: password
+        subnets:
+          title: Public subnets to create ingress
+          type: string
+        aws_secret_access_key:
+          title: AWS Secret Access Key
+          type: string
+          ui:widget: password
+        aws_access_key_id:
+          title: AWS Access Key ID
+          type: string
+          ui:widget: password
+        docker_hub_username:
+          title: Docker Hub Username
+          type: string
+        docker_hub_password:
+          title: Docker Hub Password
+          type: string
+          ui:widget: password
   steps:
     - id: template
       name: Fetch Skeleton + Template
@@ -62,6 +91,8 @@ spec:
           description: ${{ parameters.description }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
           github_url: ${{ parameters.repoUrl }}
+          subnets: ${{ parameters.subnets }}
+          dns: "http://${{ parameters.app_name }}.gdantas.com.br"
           team: ${{ parameters.owner }}
 
     - id: publish
@@ -70,25 +101,16 @@ spec:
       input:
         allowedHosts:
           - github.com
-        description: "https://${{ parameters.app_name }}.surge.sh"
+        description: "http://${{ parameters.app_name }}.gdantas.com.br"
         repoUrl: ${{ parameters.repoUrl }}
         secrets:
-          KUBERNETES_SECRET: ${{ parameters.surge_token }}
-          IMAGE_REGISTRY: ${{ parameters.app_name }}.surge.sh
-        repoVariables:
-          KUBERNETES_URL: ${{ parameters.app_name }}.surge.sh
-
-    - id: register
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: "/catalog-info.yaml"
+          KUBE_CONFIG_DATA: ${{ parameters.kube_config }}
+          AWS_SECRET_ACCESS_KEY: ${{ parameters.aws_secret_access_key }}
+          AWS_ACCESS_KEY_ID:  ${{ parameters.aws_access_key_id }}
+          DOCKER_HUB_USERNAME: ${{ parameters.docker_hub_username }}
+          DOCKER_HUB_PASSWORD: ${{ parameters.docker_hub_password }}
 
   output:
     links:
       - title: Go to Repository ;)
         url: ${{ steps.publish.output.remoteUrl }}
-      - title: Open in Backstage Catalog
-        icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
