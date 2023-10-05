@@ -40,7 +40,7 @@
 Export github token to env variable
 
 ```sh
-  export GH_PAT_TOKEN=<your token>
+export GH_PAT_TOKEN=<your token>
 ```
 
 To start the app, run:
